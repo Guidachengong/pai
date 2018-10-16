@@ -59,7 +59,7 @@ class kubectl_conf_check:
 
         try:
             local_kubectl_conf = common.load_yaml_file("{0}/config".format(self.kube_conf_path))
-            http = self.cluster_config['clusterinfo']['api-server-http']
+            http = self.cluster_config['clusterinfo']['api-server-scheme']
             ip = self.cluster_config['clusterinfo']['api-servers-ip']
             port = self.cluster_config['clusterinfo']['api-server-port']
             api_server_address_pai_conf = "{0}://{1}:{2}".format(http, ip, port)

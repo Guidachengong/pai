@@ -17,7 +17,8 @@
 
 kubernetes:
   api-server-port: 8080
-  api-server-http: http
+  # scheme suggest config http or https
+  api-server-scheme: http
   # Find the namesever in  /etc/resolv.conf
   cluster-dns: {{ env["dns"] }}
   # To support k8s ha, you should set an lb address here.

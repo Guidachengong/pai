@@ -350,7 +350,7 @@ class paiObjectModel:
 
     def getK8sApiServerUri(self):
 
-        http = self.rawData["kubernetesConfiguration"]["kubernetes"]["api-server-http"]
+        http = self.rawData["kubernetesConfiguration"]["kubernetes"]["api-server-scheme"]
         ip = self.rawData["kubernetesConfiguration"]["kubernetes"]["load-balance-ip"]
         port = self.rawData["kubernetesConfiguration"]["kubernetes"]["api-server-port"]
         ret = "{0}://{1}:{2}".format(http, ip, port)
