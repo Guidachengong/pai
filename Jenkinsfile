@@ -64,6 +64,9 @@ sudo chown core:core -R /pathHadoop/
 QUICK_START_PATH=${JENKINS_HOME}/${BED}/singlebox/quick-start
 CONFIG_PATH=${JENKINS_HOME}/${BED}/singlebox/cluster-configuration
 
+# Install necessary python package
+sudo pip install GitPython
+
 # generate quick-start
 $JENKINS_HOME/scripts/${BED}-gen_single-box.sh ${QUICK_START_PATH}
 # ! fix permission
@@ -118,7 +121,7 @@ sudo docker run -itd \
   --privileged=true \
   --net=host \
   --name=dev-box-singlebox \
-  openpai.azurecr.io/paiclusterint/dev-box > SINGLE_BOX_DEV_BOX.txt
+  10.0.1.5:5000/openpai/dev-box:${IMAGE_TAG} > SINGLE_BOX_DEV_BOX.txt
 '''
             script {
               env.SINGLE_BOX_DEV_BOX = readFile("$WORKSPACE/SINGLE_BOX_DEV_BOX.txt").trim()
@@ -210,7 +213,7 @@ sudo docker run -itd \
   --privileged=true \
   --net=host \
   --name=dev-box-cluster \
-  openpai.azurecr.io/paiclusterint/dev-box > CLUSTER_DEV_BOX.txt
+  10.0.1.5:5000/openpai/dev-box:${IMAGE_TAG} > CLUSTER_DEV_BOX.txt
 '''
             script {
               env.CLUSTER_DEV_BOX = readFile("$WORKSPACE/CLUSTER_DEV_BOX.txt").trim()
@@ -339,7 +342,7 @@ $SINGLE_BOX_URL/rest-server/api/v1/token \
 JOB_NAME="e2e-test-$RANDOM-$RANDOM"
 curl --silent --verbose \
 --request POST \
-$SINGLE_BOX_URL/rest-server/api/v1/jobs \
+$SINGLE_BOX_URL/rest-server/api/v1/user/admin/jobs/ \
 --header "Authorization: Bearer $TOKEN" \
 --header 'Content-Type: application/json' \
 --data "{
@@ -358,13 +361,13 @@ $SINGLE_BOX_URL/rest-server/api/v1/jobs \
 while :; do
 sleep 10
 STATUS=$(
-curl --silent --verbose $SINGLE_BOX_URL/rest-server/api/v1/jobs/$JOB_NAME \
+curl --silent --verbose $SINGLE_BOX_URL/rest-server/api/v1/user/admin/jobs/$JOB_NAME \
 | python -c "import sys,json;sys.stdout.write(json.loads(sys.stdin.read())['jobStatus']['state'])"
 )
 if [ "$STATUS" == 'SUCCEEDED' ]; then break; fi
 if [ "$STATUS" != 'WAITING' ] && [ "$STATUS" != 'RUNNING' ]; then exit 1; fi
 done
-# Retrive marketplace job templates
+# Retrieve marketplace job templates
 sleep 10
 TotalCount=$(
 curl --silent --verbose $SINGLE_BOX_URL/rest-server/api/v2/template/job \
@@ -445,7 +448,7 @@ $CLUSTER_URL/rest-server/api/v1/token \
 JOB_NAME="e2e-test-$RANDOM-$RANDOM"
 curl --silent --verbose \
 --request POST \
-$CLUSTER_URL/rest-server/api/v1/jobs \
+$CLUSTER_URL/rest-server/api/v1/user/admin/jobs \
 --header "Authorization: Bearer $TOKEN" \
 --header 'Content-Type: application/json' \
 --data "{
@@ -464,7 +467,7 @@ $CLUSTER_URL/rest-server/api/v1/jobs \
 while :; do
 sleep 10
 STATUS=$(
-curl --silent --verbose $CLUSTER_URL/rest-server/api/v1/jobs/$JOB_NAME \
+curl --silent --verbose $CLUSTER_URL/rest-server/api/v1/user/admin/jobs/$JOB_NAME \
 | python -c "import sys,json;sys.stdout.write(json.loads(sys.stdin.read())['jobStatus']['state'])"
 )
 if [ "$STATUS" == 'SUCCEEDED' ]; then break; fi

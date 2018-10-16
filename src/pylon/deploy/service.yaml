@@ -20,8 +20,8 @@ prerequisite:
 
 template-list:
   - pylon.yaml
-  - stop.sh
-  - refresh.sh
+  - pylon-service.yaml
+  - start.sh
 
 start-script: start.sh
 stop-script: stop.sh
@@ -31,4 +31,4 @@ upgraded-script: upgraded.sh
 
 
 deploy-rules:
-  in: pai-master
+  - in: pai-master

@@ -85,12 +85,15 @@ const getCommands = (element) => {
 };
 
 const saveYamlToHDFS = (req) => {
+  let namespace = req.user.username;
+  let jobname = req.body.name;
+  jobname = `${namespace}~${jobname}`;
   const hdfs = new Hdfs(launcherConfig.webhdfsUri);
   async.parallel([
     (parallelCallback) => {
       let jobConfigYaml = launcherConfig.jobConfigFileName.replace('json', 'yaml');
       hdfs.createFile(
-        `/Container/${req.user.username}/${req.body.name}/${jobConfigYaml}`,
+        `/Container/${req.user.username}/${jobname}/${jobConfigYaml}`,
         yaml.safeDump(req.body),
         {'user.name': req.user.username, 'permission': '644', 'overwrite': 'true'},
         (error, result) => {
@@ -199,6 +202,7 @@ const convert = (req, res, next) => {
     };
     newbody.taskRoles.push(taskRole);
   });
+  req.params.username = req.user.username;
   req.body = newbody;
   next();
 };

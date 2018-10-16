@@ -25,6 +25,16 @@
 - k8s-clean:
     - The same process as k8s-bootup.
 
+
+## paictl config
+
+- paictl config command is designed for cluster configuration management.
+- With ```paictl config```, you could push the latest configuration from git or local to k8s-configmap.
+- With ```paictl config```, you could get the cluster configuration from k8s-configmap
+- With ```paictl config```, you could set the external storage type. And based on it, paictl could sync the latest data from the right place.  
+
+
+
 ## paictl machine
 
 - paictl machine command is designed for daily maintenance, such as add and remove machine.
@@ -34,7 +44,7 @@
 
 ## paictl service
 
-- paictl will iterate all folder in the path ```pai/pai-management/bootstrap```. If it contains the file ```service.yaml``` and corresponding operation script, paictl will call the script to handle the operator.
+- paictl will iterate all folder in the path ```pai/src```. If it contains the file ```service.yaml``` and corresponding operation script, paictl will call the script to handle the operator.
 
 
 <div  align="center">
